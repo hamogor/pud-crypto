@@ -1,0 +1,7 @@
+{
+    "genesis_time": "2021/01/02T00:00:00.000000000Z",
+    "chain_id": "pud-crypto-ledger",
+    "balances": {
+        "harry": 1000000
+    }
+}
