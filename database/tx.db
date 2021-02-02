@@ -3,4 +3,9 @@
 {"from":"harry","to":"babayaga","value":2000,"data":""}
 {"from":"harry","to":"harry","value":100,"data":"reward"}
 {"from":"babayaga","to":"harry","value":1,"data":""}
-{"from":"harry","to":"babayaga","value":100,"data":""}
+{"from":"babayaga","to":"caesar","value":1000,"data":""}
+{"from":"babayaga","to":"harry","value":50,"data":""}
+{"from":"harry","to":"harry","value":100,"data":"reward"}
+{"from":"harry","to":"harry","value":100,"data":"reward"}
+{"from":"harry","to":"harry","value":100,"data":"reward"}
+{"from":"harry","to":"harry","value":100,"data":"reward"}
