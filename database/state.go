@@ -5,14 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 )
 
-// Snapshot for persisting to disk
-type Snapshot [32]byte
-
-// State of database
 type State struct {
 	Balances  map[Account]uint
 	txMempool []Tx
@@ -21,13 +16,13 @@ type State struct {
 	latestBlockHash Hash
 }
 
-func NewStateFromDisk() (*State, error) {
-	cwd, err := os.Getwd()
+func NewStateFromDisk(dataDir string) (*State, error) {
+	err := initDataDirIfNotExists(dataDir)
 	if err != nil {
 		return nil, err
 	}
 
-	gen, err := loadGenesis(filepath.Join(cwd, "database", "genesis.json"))
+	gen, err := loadGenesis(getGenesisJsonFilePath(dataDir))
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +32,7 @@ func NewStateFromDisk() (*State, error) {
 		balances[account] = balance
 	}
 
-	f, err := os.OpenFile(filepath.Join(cwd, "database", "block.db"), os.O_APPEND|os.O_RDWR, 0600)
+	f, err := os.OpenFile(getBlocksDbFilePath(dataDir), os.O_APPEND|os.O_RDWR, 0600)
 	if err != nil {
 		return nil, err
 	}
@@ -118,11 +113,10 @@ func (s *State) Persist() (Hash, error) {
 	s.txMempool = []Tx{}
 
 	return s.latestBlockHash, nil
-
 }
 
-func (s *State) Close() {
-	s.dbFile.Close()
+func (s *State) Close() error {
+	return s.dbFile.Close()
 }
 
 func (s *State) applyBlock(b Block) error {
@@ -131,6 +125,7 @@ func (s *State) applyBlock(b Block) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -140,7 +135,7 @@ func (s *State) apply(tx Tx) error {
 		return nil
 	}
 
-	if s.Balances[tx.From] < tx.Value {
+	if s.Balances[tx.From]-tx.Value < 0 {
 		return fmt.Errorf("insufficient balance")
 	}
 

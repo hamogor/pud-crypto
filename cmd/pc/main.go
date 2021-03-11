@@ -7,23 +7,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const flagDataDir = "datadir"
+
 func main() {
-	var pcCmd = &cobra.Command{
-		Use:   "pc",
+	var tbbCmd = &cobra.Command{
+		Use:   "pcc",
 		Short: "Pud Crypto CLI",
 		Run: func(cmd *cobra.Command, args []string) {
 		},
 	}
 
-	pcCmd.AddCommand(versionCmd)
-	pcCmd.AddCommand(balancesCmd())
-	pcCmd.AddCommand(txCmd())
+	tbbCmd.AddCommand(versionCmd)
+	tbbCmd.AddCommand(balancesCmd())
+	tbbCmd.AddCommand(txCmd())
 
-	err := pcCmd.Execute()
+	err := tbbCmd.Execute()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func addDefaultRequiredFlags(cmd *cobra.Command) {
+	cmd.Flags().String(flagDataDir, "", "Absolute path to the node data dir where the DB will/is stored")
+	cmd.MarkFlagRequired(flagDataDir)
 }
 
 func incorrectUsageErr() error {
