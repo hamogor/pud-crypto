@@ -77,6 +77,10 @@ func (s *State) LatestBlockHash() Hash {
 	return s.latestBlockHash
 }
 
+func (s *State) LatestBlock() Block {
+	return s.latestBlock
+}
+
 func (s *State) AddBlock(b Block) error {
 	for _, tx := range b.TXs {
 		if err := s.AddTx(tx); err != nil {
